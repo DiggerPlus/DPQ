@@ -2,7 +2,7 @@
 
 import times
 
-from .connections import get_current_connection
+from .connections import resolve_connection
 from .exceptions import NoSuchJobError, UnpickleError
 from .job import Job
 
@@ -19,7 +19,7 @@ class Queue(object):
         """Return an iterable of all Queues"""
         prefix = cls.namespace_prefix
         if connection is None:
-            connection = get_current_connection()
+            connection = resolve_connection()
 
         def to_queue(queue_key):
             return cls.from_queue_key(queue_key, connecion=connection)
@@ -40,7 +40,7 @@ class Queue(object):
     def __init__(self, name='default', default_timeout=None, connection=None,
                  default_job_timeout=180):
         if connection is None:
-            connection = get_current_connection()
+            connection = resolve_connection()
 
         self.connection = connection
         prefix = self.namespace_prefix
