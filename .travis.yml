@@ -13,5 +13,3 @@ install:
   #- pip install pytest  # installed by Travis by default already
 script:
     py.test --cov tests --durations=5
-after_success:
-  - coveralls
