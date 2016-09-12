@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import contextlib
 from functools import partial
 
 from redis import StrictRedis, Redis
@@ -8,6 +9,10 @@ from .local import LocalStack
 
 
 _connection_stack = LocalStack()
+
+
+class NoRedisConnectionException(Exception):
+    pass
 
 
 def fix_return_type(func):
@@ -60,6 +65,7 @@ def patch_connection(connection):
     return connection
 
 
+@contextlib.contextmanager
 def Connection(connection=None):
     if connection is None:
         connection = StrictRedis()
@@ -82,6 +88,32 @@ def pop_connection(connection=None):
     return _connection_stack.pop()
 
 
+def use_connection(redis=None):
+    """Clears the stack and uses the given connection.  Protects against mixed
+    use of use_connection() and stacked connection contexts.
+    """
+    assert _connection_stack.depth() <= 1, \
+        'You should not mix Connection contexts with use_connection().'
+    _connection_stack.empty()
+
+    if redis is None:
+        redis = Redis()
+    push_connection(redis)
+
+
 def get_current_connection():
     """Return the current Redis connection"""
     return _connection_stack.top
+
+
+def resolve_connection(connection=None):
+    if connection is not None:
+        return patch_connection(connection)
+
+    connection = get_current_connection()
+    if connection is None:
+        raise NoRedisConnectionException('Could not resolve a Redis Connection')
+    return connection
+
+__all__ = ['Connection', 'get_current_connection', 'push_connection',
+           'pop_connection', 'use_connection']
