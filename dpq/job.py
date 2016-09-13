@@ -125,6 +125,8 @@ class Job(object):
                 self._result = loads(rv)
         return self._result
 
+    result = return_value
+
     def refresh(self):  # noqa
         """Overwrite the current instance's properties with the values in the
         corresponding Redis key.
@@ -193,7 +195,8 @@ class Job(object):
 
     def perform(self):
         """Invoke the job function with arguments"""
-        return self.func(*self.args, **self.kwargs)
+        self._result = self.func(*self.args, **self.kwargs)
+        return self._result
 
     def get_call_string(self):
         if self.func_name is None:
