@@ -167,6 +167,12 @@ class LocalStack(object):
         except (AttributeError, IndexError):
             return None
 
+    def __len__(self):
+        stack = getattr(self._local, 'stack', None)
+        if stack is None:
+            return 0
+        return len(stack)
+
 
 class LocalManager(object):
 

@@ -37,6 +37,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=get_dependencies(),
+    scripts=['bin/dpqinfo', 'bin/dpqworker'],
     extras_require={
         ':python_version=="2.6"': ['argparse', 'importlib'],
     },

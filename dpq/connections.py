@@ -5,7 +5,7 @@ from functools import partial
 
 from redis import StrictRedis, Redis
 
-from .local import LocalStack
+from .local import LocalStack, release_local
 
 
 _connection_stack = LocalStack()
@@ -92,9 +92,9 @@ def use_connection(redis=None):
     """Clears the stack and uses the given connection.  Protects against mixed
     use of use_connection() and stacked connection contexts.
     """
-    assert _connection_stack.depth() <= 1, \
+    assert len(_connection_stack) <= 1, \
         'You should not mix Connection contexts with use_connection().'
-    _connection_stack.empty()
+    release_local(_connection_stack)
 
     if redis is None:
         redis = Redis()

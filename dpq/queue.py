@@ -7,6 +7,10 @@ from .exceptions import NoSuchJobError, UnpickleError, InvalidJobOperationError
 from .job import Job
 
 
+def get_failed_queue(connection=None):
+    return FailedQueue(connection=connection)
+
+
 def compact(lst):
     return [item for item in lst if item is not None]
 
