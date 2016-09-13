@@ -26,7 +26,7 @@ class Queue(object):
             connection = resolve_connection()
 
         def to_queue(queue_key):
-            return cls.from_queue_key(queue_key, connecion=connection)
+            return cls.from_queue_key(queue_key, connection=connection)
         return map(to_queue, connection.keys('%s*' % prefix))
 
     @classmethod
