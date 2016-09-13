@@ -116,4 +116,4 @@ def resolve_connection(connection=None):
     return connection
 
 __all__ = ['Connection', 'get_current_connection', 'push_connection',
-           'pop_connection', 'use_connection']
+           'pop_connection', 'use_connection', 'resolve_connection']
